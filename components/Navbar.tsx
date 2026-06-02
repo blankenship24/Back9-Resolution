@@ -32,6 +32,7 @@ export default function Navbar() {
     { href: "/#featured", label: "Shop" },
     { href: "/build-kit", label: "Build Your Kit" },
     { href: "/about", label: "About" },
+    { href: "/contact", label: "Contact" },
   ];
 
   return (

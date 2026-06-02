@@ -86,13 +86,29 @@ const FAQS = [
 export default function HomePage() {
   const [emailValue, setEmailValue] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const [subscribeLoading, setSubscribeLoading] = useState(false);
+  const [subscribeError, setSubscribeError] = useState("");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  function handleSubscribe(e: React.FormEvent) {
+  async function handleSubscribe(e: React.FormEvent) {
     e.preventDefault();
-    if (emailValue.trim()) {
+    if (!emailValue.trim()) return;
+    setSubscribeLoading(true);
+    setSubscribeError("");
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: emailValue.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to subscribe");
       setSubscribed(true);
       setEmailValue("");
+    } catch (err: unknown) {
+      setSubscribeError(err instanceof Error ? err.message : "Something went wrong.");
+    } finally {
+      setSubscribeLoading(false);
     }
   }
 
@@ -312,25 +328,31 @@ export default function HomePage() {
               </p>
             </div>
           ) : (
-            <form
-              onSubmit={handleSubscribe}
-              className="flex flex-col sm:flex-row gap-3"
-            >
-              <input
-                type="email"
-                value={emailValue}
-                onChange={(e) => setEmailValue(e.target.value)}
-                placeholder="your@email.com"
-                required
-                className="flex-1 bg-white/10 border border-white/20 rounded-full px-5 py-3.5 text-white placeholder-white/40 focus:outline-none focus:border-[#C9A84C] focus:bg-white/15 transition-all text-sm"
-              />
-              <button
-                type="submit"
-                className="bg-[#C9A84C] text-black font-semibold rounded-full px-7 py-3.5 hover:bg-[#b8942f] transition-all duration-200 active:scale-[0.98] text-sm whitespace-nowrap"
+            <>
+              <form
+                onSubmit={handleSubscribe}
+                className="flex flex-col sm:flex-row gap-3"
               >
-                Subscribe
-              </button>
-            </form>
+                <input
+                  type="email"
+                  value={emailValue}
+                  onChange={(e) => { setEmailValue(e.target.value); setSubscribeError(""); }}
+                  placeholder="your@email.com"
+                  required
+                  className="flex-1 bg-white/10 border border-white/20 rounded-full px-5 py-3.5 text-white placeholder-white/40 focus:outline-none focus:border-[#C9A84C] focus:bg-white/15 transition-all text-sm"
+                />
+                <button
+                  type="submit"
+                  disabled={subscribeLoading}
+                  className="bg-[#C9A84C] text-black font-semibold rounded-full px-7 py-3.5 hover:bg-[#b8942f] transition-all duration-200 active:scale-[0.98] text-sm whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {subscribeLoading ? "Subscribing..." : "Subscribe"}
+                </button>
+              </form>
+              {subscribeError && (
+                <p className="text-red-300 text-sm mt-2">{subscribeError}</p>
+              )}
+            </>
           )}
           <p className="text-white/30 text-xs mt-4">
             No spam, ever. Unsubscribe anytime.

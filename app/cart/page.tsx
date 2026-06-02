@@ -173,12 +173,12 @@ export default function CartPage() {
                 </div>
               </div>
 
-              <button
-                onClick={() => alert("Checkout coming soon!")}
-                className="w-full bg-[#C9A84C] text-black rounded-full py-4 font-semibold hover:bg-[#b8942f] transition-all duration-200 active:scale-[0.98] mb-3"
+              <Link
+                href="/checkout"
+                className="block w-full text-center bg-[#C9A84C] text-black rounded-full py-4 font-semibold hover:bg-[#b8942f] transition-all duration-200 active:scale-[0.98] mb-3"
               >
                 Proceed to Checkout
-              </button>
+              </Link>
               <Link
                 href="/#featured"
                 className="block w-full text-center border-2 border-gray-200 text-[#6B7280] rounded-full py-3.5 text-sm font-medium hover:border-[#1A3A2A] hover:text-[#1A3A2A] transition-all"

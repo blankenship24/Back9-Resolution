@@ -88,19 +88,19 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a
-                  href="mailto:support@backninerecovery.com"
+                <Link
+                  href="/contact"
                   className="hover:text-[#C9A84C] transition-colors"
                 >
                   Contact
-                </a>
+                </Link>
               </li>
               <li>
                 <Link
-                  href="/cart"
+                  href="/checkout"
                   className="hover:text-[#C9A84C] transition-colors"
                 >
-                  Cart
+                  Checkout
                 </Link>
               </li>
             </ul>

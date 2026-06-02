@@ -1,17 +1,20 @@
 import { PrismaClient } from '@prisma/client'
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
-import path from 'path'
+import { PrismaNeonHttp } from '@prisma/adapter-neon'
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
 
-function createPrismaClient() {
-  const dbPath = path.join(process.cwd(), 'dev.db')
-  const adapter = new PrismaBetterSqlite3({ url: dbPath })
+function createPrismaClient(): PrismaClient {
+  const connectionString = process.env.DATABASE_URL
+  if (!connectionString) {
+    throw new Error('DATABASE_URL environment variable is not set')
+  }
+  const adapter = new PrismaNeonHttp(connectionString, {})
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return new PrismaClient({ adapter } as any)
 }
 
-export const prisma: PrismaClient = globalForPrisma.prisma || createPrismaClient()
+export const prisma: PrismaClient =
+  globalForPrisma.prisma || createPrismaClient()
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 

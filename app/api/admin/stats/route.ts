@@ -12,7 +12,7 @@ export async function GET() {
     ])
 
     const orderCount = orders.length
-    const revenue = orders.reduce((sum, order) => sum + order.total, 0)
+    const revenue = orders.reduce((sum: number, order) => sum + order.total, 0)
     const recentOrders = orders.slice(0, 10)
 
     return NextResponse.json({ orderCount, revenue, recentOrders, subscriberCount })
